@@ -1,8 +1,7 @@
 FROM node:18-alpine as builder
 WORKDIR /app
 
-# Copy the ZIP from the subfolder frontend-artifact
-COPY frontend-artifact/frontend-artifact-latest.zip ./
+COPY frontend-artifact-latest.zip ./
 
 RUN apk add --no-cache unzip && unzip frontend-artifact-latest.zip && rm frontend-artifact-latest.zip
 
