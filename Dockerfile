@@ -2,15 +2,20 @@
 FROM node:18 AS builder
 
 WORKDIR /app
-COPY package*.json ./
+
+# Copy and unzip the project
+COPY ezyZip.zip ./
+RUN apt-get update && apt-get install -y unzip && unzip ezyZip.zip -d app && rm ezyZip.zip
+
+WORKDIR /app/app
+
 RUN npm install
-COPY . .
 RUN npm run build
 
 # Stage 2: Serve with nginx
 FROM nginx:alpine
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
