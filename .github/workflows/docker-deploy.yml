@@ -25,7 +25,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile
           context: ./cart-project
+          file: ./cart-project/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/react-cart:latest
+
