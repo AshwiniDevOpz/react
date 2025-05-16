@@ -1,0 +1,27 @@
+name: Build and Deploy React App
+
+on:
+  push:
+    branches:
+      - main  # or your branch name
+    paths:
+      - 'frontend-artifact-latest.zip'  # triggers when ZIP changes
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t react-artifact-app .
+
+      - name: Run Docker container (Optional for testing)
+        run: |
+          docker run -d -p 80:80 react-artifact-app
