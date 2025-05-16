@@ -3,9 +3,10 @@ name: Build and Deploy React App
 on:
   push:
     branches:
-      - main  # or your branch name
+      - main  # or your branch name   
     paths:
       - 'frontend-artifact-latest.zip'  # triggers when ZIP changes
+  workflow_dispatch:     
 
 jobs:
   build-and-deploy:
