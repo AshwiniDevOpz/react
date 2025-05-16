@@ -1,24 +1,17 @@
-# Use Node to build the app
-FROM node:18-alpine as builder
+# Stage 1: Build
+FROM node:18 AS builder
+
 WORKDIR /app
+COPY cart-project/package*.json ./
+RUN npm install
+COPY cart-project/ .
+RUN npm run build
 
-# Copy the ZIP artifact from the frontend-artifact folder
-COPY frontend-artifact/frontend-artifact-latest.zip ./
-
-# Unzip and remove the archive
-RUN apk add --no-cache unzip && \
-    unzip frontend-artifact-latest.zip && \
-    rm frontend-artifact-latest.zip
-
-# Run npm install and build (assuming package.json is in the extracted ZIP)
-RUN npm install && npm run build
-
-# Use Nginx to serve the built app
+# Stage 2: Serve with nginx
 FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
 
-# Optional: Provide a custom Nginx config if you have one
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
